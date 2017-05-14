@@ -26,7 +26,7 @@ There is a separate JUnit test class for each of the classes in the solution, ex
 
 ## Class designs
 
-### RentalCompany
+`RentalCompany`
 
 The RentalCompany class represents the Car Rental company described in the requirements.  It comprises the fleet of cars and a collection of rentals (associations between Car and Person).
 
@@ -41,9 +41,12 @@ The fleet is designed as a Set implemented as a HashSet of Car objects.  All Car
 
 
 
-| Name  |
-| --- |
-| A Name consists of a first name and a last name of a person.  |
+`Name`
+
+A Name consists of a first name and a last name of a person.
+
+| Design Principle | Decisions |
+| ---------------- | --------- |
 | Mutability | Name is immutable.
 - It has no mutator methods
 - It is final and can&#39;t be extended
