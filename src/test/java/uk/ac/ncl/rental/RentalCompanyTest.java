@@ -1,7 +1,7 @@
 /**
  * 
  */
-package uk.ac.ncl.rental.test;
+package uk.ac.ncl.rental;
 
 import static org.junit.Assert.*;
 
