@@ -1,5 +1,16 @@
 # Car Rental application for Advanced Java Assignment
 
+This coursework assignment was the design and implementation of classes and tests to be used in development of a simplified Car Rental application.  An end-user application was not required - the interfaces and classes were expected to be tested using JUnit tests. 
+
+The design principles covered were: 
+* appropriate overriding of Object class methods, including overriding toString and providing a static valueOf method when appropriate
+* design of interface-based hierarchies, programming through interfaces and late binding
+* use of factories to control instantiation of objects, including guaranteeing the instantiation of unique instances
+* defensive programming including the use of immutability
+* appropriate use of the Collections framework
+* use of Javadocs
+* testing
+
 ## Classes
 
 It was decided that `Name`, `Person`, `RegistrationNumber` and `DrivingLicence` were obvious classes; composed of various parts, that need to be accessed individually by methods, and likely to be used by other entities in the system e.g. Person itself uses Name.
