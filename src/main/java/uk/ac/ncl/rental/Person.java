@@ -69,7 +69,7 @@ public final class Person {
 	 * @return true if the Name and Date of birth of this Person and the compared object are equal to each other,
 	 * false otherwise, as a boolean.
 	 */
-	public boolean equals(Object op) {
+	@Override public boolean equals(Object op) {
 		// equals contract
 		
 		// reflexive
@@ -89,7 +89,7 @@ public final class Person {
 	 * Returns a hash code for this Person.
 	 * @return a hash code value for this object as an integer.
 	 */
-	public int hashCode() {
+	@Override public int hashCode() {
 		int hc = 17;
 		hc = hc*37 + (name == null ? 0 : name.hashCode());
 		hc = hc*37 + (birthDate == null ? 0 : birthDate.hashCode());
@@ -101,7 +101,7 @@ public final class Person {
 	 * @return the string representation of Name, and the string representation of the date of birth in the format [dd/MM/yyyy]
 	 * separated by comma i.e. [Firstname Lastname],[dd/MM/yyyy>]
 	 */
-	public String toString() {
+	@Override public String toString() {
 		SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
 		return name + "," + dateFormat.format(birthDate);
 	}

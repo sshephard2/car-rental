@@ -100,7 +100,7 @@ public final class LicenceNumber {
 	 * Return a string representation of this LicenceNumber.
 	 * @return the string representation of the licence number in the format [initials]-[year]-[serialnum].
 	 */
-	public String toString() {
+	@Override public String toString() {
 		return initials + "-" + year + "-" + serialnum;
 	}
 }

@@ -93,7 +93,7 @@ public final class RegistrationNumber {
 	 * OReturn a string representation of this RegistrationNumber.
 	 * @return the first and last parts of this RegistrationNumber, separated by space, as a String.
 	 */
-	public String toString() {
+	@Override public String toString() {
 		return firstPart + " " + secondPart;
 	}
 

@@ -93,7 +93,7 @@ public final class DrivingLicence {
 	 * @return the string representation of the LicenceNumber, the string representation of the date of issue in the format [dd/MM/yyyy],
 	 * and the full status (true or false) separated by comma i.e. [initials]-[year]-[serialnum],[dd/MM/yyyy],[true|false]
 	 */
-	public String toString() {
+	@Override public String toString() {
 		SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
 		return licenceNum + "," + dateFormat.format(issued) + "," + full;
 	}

@@ -65,7 +65,7 @@ public final class Name {
 	 * @return true if the first name and last name of this Name and the compared object are equal to each other,
 	 * false otherwise, as a boolean.
 	 */
-	public boolean equals(Object op) {
+	@Override public boolean equals(Object op) {
 		// equals contract
 		
 		// reflexive
@@ -84,7 +84,7 @@ public final class Name {
 	 * Returns a hash code for this Name.
 	 * @return a hash code value for this object as an integer.
 	 */
-	public int hashCode() {
+	@Override public int hashCode() {
 		int hc = 17;
 		hc = hc*37 + (firstName == null ? 0 : firstName.hashCode());
 		hc = hc*37 + (lastName == null ? 0 : lastName.hashCode());
@@ -95,7 +95,7 @@ public final class Name {
 	 * Return a string representation of this Name.
 	 * @return the first and last names of this Name, separated by space, as a String.
 	 */
-	public String toString() {
+	@Override public String toString() {
 		return firstName + " " + lastName;
 	}
 	

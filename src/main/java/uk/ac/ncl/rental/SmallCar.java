@@ -56,7 +56,7 @@ public final class SmallCar extends AbstractCar {
 	 * Return a string representation of this Name.
 	 * @return the string representation of the car in the format "SmallCar",[registration number],[fuel]
 	 */
-	public String toString() {
+	@Override public String toString() {
 		// Calls getRegistrationNumber and getFuel from AbstractCar
 		return "SmallCar," + this.getRegistrationNumber() + "," + this.getFuel();
 	}
