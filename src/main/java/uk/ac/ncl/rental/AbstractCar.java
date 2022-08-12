@@ -59,7 +59,7 @@ public abstract class AbstractCar implements Car {
 	}
 	
 	/**
-	 * Method to get whether or not the car is currently issued for rental.
+	 * Method to get whether the car is currently issued for rental.
 	 * @return true if the car is currently being rented, false otherwise.
 	 */
 	public boolean isRented() {

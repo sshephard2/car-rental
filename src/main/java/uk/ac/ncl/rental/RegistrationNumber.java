@@ -25,9 +25,9 @@ public final class RegistrationNumber {
 	
 	/**
 	 * A map, implemented as a HashMap, from the String representation of a RegistrationNumber to theRegistrationNumber object,
-	 * used to to enforce uniqueness of Registration Numbers.
+	 * used to enforce uniqueness of Registration Numbers.
 	 */
-	private static final Map<String, RegistrationNumber> REGNUMBERS = new HashMap<String, RegistrationNumber>();
+	private static final Map<String, RegistrationNumber> REGNUMBERS = new HashMap<>();
 	
 	/**
 	 * Constructs a RegistrationNumber from its two parts.
@@ -99,7 +99,7 @@ public final class RegistrationNumber {
 
 	/**
 	 * Returns a RegistrationNumber object from a correctly formatted String.
-	 * @param fullname the String to be parsed in the format [FirstPart] [SecondPart].
+	 * @param rnString the String to be parsed in the format [FirstPart] [SecondPart].
 	 * @return a RegistrationNumber object holding the value represented by the String argument.
 	 * @throws IllegalArgumentException if the String cannot be parsed.
 	 */
@@ -113,8 +113,8 @@ public final class RegistrationNumber {
 		if (parts.length!=2) {
 			throw new IllegalArgumentException("There must be two parts separated by space");
 		}
-		final String firstPart = parts[0].equals(null) ? null : parts[0];
-		final String secondPart = parts[1].equals(null) ? null : parts[1];
+		final String firstPart = parts[0];
+		final String secondPart = parts[1];
 		
 		// Call Factory method - throws an exception if this RegistrationNumber is a duplicate
 		return RegistrationNumber.getInstance(firstPart, secondPart);

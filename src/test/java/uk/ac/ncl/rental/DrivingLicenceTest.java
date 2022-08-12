@@ -65,7 +65,7 @@ public class DrivingLicenceTest {
 	@Test(expected = IllegalArgumentException.class)
 	public void testDrivingLicenceInvalidDate() {
 		Calendar cIssued = Calendar.getInstance();
-		cIssued.set(2017,Calendar.OCTOBER,20);
+		cIssued.set(2999,Calendar.OCTOBER,20);
 		Date issued = cIssued.getTime();
 		new DrivingLicence(new Name("Edward", "Evans"), issued, true);
 		// No assert statement - should throw an exception

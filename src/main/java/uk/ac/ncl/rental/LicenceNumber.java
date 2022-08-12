@@ -35,7 +35,7 @@ public final class LicenceNumber {
 	 * A map, implemented as a HashMap, from the first and second parts of a LicenceNumber to the current highest sequence number for that combination
 	 * of parts, used to generate the unique serial numbers.
 	 */
-	private static final Map<String, Integer> SERIALSEQ = new HashMap<String, Integer>();
+	private static final Map<String, Integer> SERIALSEQ = new HashMap<>();
 		
 	/**
 	 * Constructs a LicenceNumber from the given Name and year of issue.

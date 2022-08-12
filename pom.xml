@@ -3,7 +3,11 @@
   <groupId>uk.ac.ncl.sshephard</groupId>
   <artifactId>car-rental</artifactId>
   <version>0.0.1-SNAPSHOT</version>
-  <name>car-rental</name>
+    <properties>
+        <maven.compiler.source>11</maven.compiler.source>
+        <maven.compiler.target>11</maven.compiler.target>
+    </properties>
+    <name>car-rental</name>
   <description>Car Rental classes for Advanced Java coursework</description>
   <dependencies>
   	<dependency>

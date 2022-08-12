@@ -62,7 +62,7 @@ public class PersonTest {
 	@Test(expected = IllegalArgumentException.class)
 	public void testPersonInvalidDate() {
 		Calendar cDOB = Calendar.getInstance();
-		cDOB.set(2018,Calendar.MARCH,4);
+		cDOB.set(2999,Calendar.MARCH,4);
 		Date dDOB = cDOB.getTime();
 		new Person(new Name("Michael", "Brown"), dDOB);
 		// No assert statement - should throw an exception

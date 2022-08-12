@@ -60,7 +60,7 @@ public class NameTest {
 	 */
 	@Test(expected = IllegalArgumentException.class)
 	public void testNameInvalidLastName() {
-		new Name("J", "S1");
+		new Name("J", "SMith");
 		// No assertion, test method should throw expected Exception type
 	}
 

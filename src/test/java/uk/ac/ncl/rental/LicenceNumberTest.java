@@ -42,7 +42,7 @@ public class LicenceNumberTest {
 	 */
 	@Test(expected = IllegalArgumentException.class)
 	public void testLicenseNumberInvalidYear() {
-		new LicenceNumber(new Name("David", "Daniels"), 2020);
+		new LicenceNumber(new Name("David", "Daniels"), 2999);
 		// No assert statement - should throw an exception
 	}
 	
