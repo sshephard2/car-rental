@@ -3,34 +3,26 @@
  */
 package uk.ac.ncl.rental;
 
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Test;
 
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Set;
 
-import org.junit.Test;
-
-import uk.ac.ncl.rental.RentalCompany;
-import uk.ac.ncl.rental.DrivingLicence;
-import uk.ac.ncl.rental.LargeCar;
-import uk.ac.ncl.rental.Name;
-import uk.ac.ncl.rental.Person;
-import uk.ac.ncl.rental.SmallCar;
-import uk.ac.ncl.rental.Car;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * RentalCompanyTest class.  JUnit test cases for the RentalCompany class.
  * @author Stephen Shephard
  * @version 1.0
  */
-public class RentalCompanyTest {
+class RentalCompanyTest {
 
 	/**
 	 * Test method for RentalCompany Constructor.
 	 */
 	@Test
-	public void testRentalCompany() {
+	void testRentalCompany() {
 		RentalCompany rentCo = new RentalCompany();
 		assertNotNull(rentCo);
 	}
@@ -39,50 +31,47 @@ public class RentalCompanyTest {
 	 * Test method for RentalCompany.addCar method.
 	 */
 	@Test
-	public void testAddCar() {
+	void testAddCar() {
 		RentalCompany rentCo = new RentalCompany();
 		for (int i=1; i<=20; i++) {
 			SmallCar sc = new SmallCar(String.format("SC%1$02d AAA", i));
-			rentCo.addCar(sc);
+			assertDoesNotThrow(() -> rentCo.addCar(sc));
 		}
 		for (int i=1; i<=10; i++) {
 			LargeCar lc = new LargeCar(String.format("LC%1$02d AAA", i));
-			rentCo.addCar(lc);
+			assertDoesNotThrow(() -> rentCo.addCar(lc));
 		}
-		// No assertions, but should not throw exceptions
 	}
 	
 	/**
 	 * Test method for RentalCompany.addCar method.
 	 * Car parameter may not be null.
 	 */
-	@Test(expected = IllegalArgumentException.class)
-	public void testAddCarInvalid() {
+	@Test
+	void testAddCarInvalid() {
 		RentalCompany rentCo = new RentalCompany();
 
-		rentCo.addCar(null);
-		// No assertion, test method should throw expected Exception type
+		assertThrows(IllegalArgumentException.class, () -> rentCo.addCar(null));
 	}
 	
 	/**
 	 * Test method for RentalCompany.addCar method.
 	 * Should not add duplicate Car.
 	 */
-	@Test(expected = IllegalStateException.class)
-	public void testAddCarDuplicate() {
+	@Test
+	void testAddCarDuplicate() {
 		RentalCompany rentCo = new RentalCompany();
 
 		SmallCar sc = new SmallCar("SC01 FFF");
 		rentCo.addCar(sc);
-		rentCo.addCar(sc);
-		// No assertion, test method should throw expected Exception type
+		assertThrows(IllegalStateException.class, () -> rentCo.addCar(sc));
 	}
 
 	/**
 	 * Test method for RentalCompany.availableCars method.
 	 */
 	@Test
-	public void testAvailableCars() {
+	void testAvailableCars() {
 		RentalCompany rentCo = new RentalCompany();
 		for (int i=1; i<=20; i++) {
 			SmallCar sc = new SmallCar(String.format("SC%1$02d CCC", i));
@@ -100,31 +89,29 @@ public class RentalCompanyTest {
 	 * Test method for RentalCompany.availableCars method.
 	 * typeOfCar parameter may not be null.
 	 */
-	@Test(expected = IllegalArgumentException.class)
-	public void testAvailableCarsNullCarType() {
+	@Test
+	void testAvailableCarsNullCarType() {
 		RentalCompany rentCo = new RentalCompany();
 
-		rentCo.availableCars(null);
-		// No assertion, test method should throw expected Exception type
+		assertThrows(IllegalArgumentException.class, () -> rentCo.availableCars(null));
 	}
 	
 	/**
 	 * Test method for RentalCompany.availableCars method.
 	 * typeOfCar parameter must be SmallCar or LargeCar.
 	 */
-	@Test(expected = IllegalArgumentException.class)
-	public void testAvailableCarsInvalidCarType() {
+	@Test
+	void testAvailableCarsInvalidCarType() {
 		RentalCompany rentCo = new RentalCompany();
 
-		rentCo.availableCars("MediumCar");
-		// No assertion, test method should throw expected Exception type
+		assertThrows(IllegalArgumentException.class, () -> rentCo.availableCars("MediumCar"));
 	}
 
 	/**
 	 * Test method for RentalCompany.getRentedCars method.
 	 */
 	@Test
-	public void testGetRentedCars() {
+	void testGetRentedCars() {
 		RentalCompany rentCo = new RentalCompany();
 		Set<Car> rentedSet;
 		
@@ -179,7 +166,7 @@ public class RentalCompanyTest {
 	 * Test method for RentalCompany.getCar method.
 	 */
 	@Test
-	public void testGetCar() {
+	void testGetCar() {
 		RentalCompany rentCo = new RentalCompany();
 		for (int i=1; i<=20; i++) {
 			SmallCar sc = new SmallCar(String.format("SC%1$02d EEE", i));
@@ -208,12 +195,11 @@ public class RentalCompanyTest {
 	 * Test method for RentalCompany.getCar method.
 	 * Person parameter may not be null.
 	 */
-	@Test(expected = IllegalArgumentException.class)
-	public void testGetCarPersonNull() {
+	@Test
+	void testGetCarPersonNull() {
 		RentalCompany rentCo = new RentalCompany();
 
-		rentCo.getCar(null);
-		// No assertion, test method should throw expected Exception type
+		assertThrows(IllegalArgumentException.class, () -> rentCo.getCar(null));
 	}
 
 	/**
@@ -221,7 +207,7 @@ public class RentalCompanyTest {
 	 * Successful issue.
 	 */
 	@Test
-	public void testIssueCarSuccess() {
+	void testIssueCarSuccess() {
 		RentalCompany rentCo = new RentalCompany();
 		for (int i=1; i<=20; i++) {
 			SmallCar sc = new SmallCar(String.format("SC%1$02d DDD", i));
@@ -259,8 +245,8 @@ public class RentalCompanyTest {
 	 * Test method for RentalCompany.issueCar method.
 	 * Person parameter may not be null.
 	 */
-	@Test(expected = IllegalArgumentException.class)
-	public void testIssueCarPersonNull() {
+	@Test
+	void testIssueCarPersonNull() {
 		RentalCompany rentCo = new RentalCompany();
 		
 		Name name = new Name("Stephen", "Shephard");
@@ -269,16 +255,15 @@ public class RentalCompanyTest {
 		Date issued = cIssued.getTime();
 		DrivingLicence dl = new DrivingLicence(name, issued, true);
 
-		rentCo.issueCar(null, dl, "LargeCar");
-		// No assertion, test method should throw expected Exception type
+		assertThrows(IllegalArgumentException.class, () -> rentCo.issueCar(null, dl, "LargeCar"));
 	}
 	
 	/**
 	 * Test method for RentalCompany.issueCar method.
 	 * Driving Licence parameter may not be null.
 	 */
-	@Test(expected = IllegalArgumentException.class)
-	public void testIssueCarDrivingLicenceNull() {
+	@Test
+	void testIssueCarDrivingLicenceNull() {
 		RentalCompany rentCo = new RentalCompany();
 		
 		Calendar cDOB = Calendar.getInstance();
@@ -287,16 +272,15 @@ public class RentalCompanyTest {
 		Name name = new Name("Stephen", "Shephard");
 		Person p = new Person(name, dDOB);
 
-		rentCo.issueCar(p, null, "LargeCar");
-		// No assertion, test method should throw expected Exception type
+		assertThrows(IllegalArgumentException.class, () -> rentCo.issueCar(p, null, "LargeCar"));
 	}
 	
 	/**
 	 * Test method for RentalCompany.issueCar method.
 	 * Type of car parameter may not be null.
 	 */
-	@Test(expected = IllegalArgumentException.class)
-	public void testIssueCarTypeOfCarNull() {
+	@Test
+	void testIssueCarTypeOfCarNull() {
 		RentalCompany rentCo = new RentalCompany();
 		
 		Calendar cDOB = Calendar.getInstance();
@@ -309,16 +293,15 @@ public class RentalCompanyTest {
 		Date issued = cIssued.getTime();
 		DrivingLicence dl = new DrivingLicence(name, issued, true);
 
-		rentCo.issueCar(p, dl, null);
-		// No assertion, test method should throw expected Exception type
+		assertThrows(IllegalArgumentException.class, () -> rentCo.issueCar(p, dl, null));
 	}
 	
 	/**
 	 * Test method for RentalCompany.issueCar method.
 	 * typeOfCar parameter must be SmallCar or LargeCar.
 	 */
-	@Test(expected = IllegalArgumentException.class)
-	public void testIssueCarTypeOfCarInvalid() {
+	@Test
+	void testIssueCarTypeOfCarInvalid() {
 		RentalCompany rentCo = new RentalCompany();
 		
 		Calendar cDOB = Calendar.getInstance();
@@ -331,8 +314,7 @@ public class RentalCompanyTest {
 		Date issued = cIssued.getTime();
 		DrivingLicence dl = new DrivingLicence(name, issued, true);
 
-		rentCo.issueCar(p, dl, "MediumCar");
-		// No assertion, test method should throw expected Exception type
+		assertThrows(IllegalArgumentException.class, () -> rentCo.issueCar(p, dl, "MediumCar"));
 	}
 
 	/**
@@ -340,7 +322,7 @@ public class RentalCompanyTest {
 	 * Unsuccessful issue.
 	 */
 	//TODO - make test independent of run date @Test
-	public void testIssueCarFailure() {
+	void testIssueCarFailure() {
 		RentalCompany rentCo = new RentalCompany();
 
 		// Add one SmallCar and two LargeCars to the fleet
@@ -423,7 +405,7 @@ public class RentalCompanyTest {
 	 * Test method for RentalCompany.terminateRental method.
 	 */
 	@Test
-	public void testTerminateRental() {
+	void testTerminateRental() {
 		RentalCompany rentCo = new RentalCompany();
 		for (int i=1; i<=20; i++) {
 			SmallCar sc = new SmallCar(String.format("SC%1$02d JJJ", i));

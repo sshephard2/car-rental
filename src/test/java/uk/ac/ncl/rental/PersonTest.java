@@ -1,13 +1,10 @@
 package uk.ac.ncl.rental;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.*;
-
-import org.junit.Test;
-
-import uk.ac.ncl.rental.Person;
-import uk.ac.ncl.rental.Name;
 import java.util.Date;
 import java.util.Calendar;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * PersonTest class.  JUnit test cases for the Person class.
@@ -15,14 +12,14 @@ import java.util.Calendar;
  * @version 1.0
  *
  */
-public class PersonTest {
+class PersonTest {
 
 	/**
 	 * Test method for Person Constructor.
 	 * Valid parameters.
 	 */
 	@Test
-	public void testPerson() {
+	void testPerson() {
 		Calendar cDOB = Calendar.getInstance();
 		cDOB.set(1971,Calendar.DECEMBER,18);
 		Date dDOB = cDOB.getTime();
@@ -36,43 +33,42 @@ public class PersonTest {
 	 * Test method for Person Constructor.
 	 * Missing name.
 	 */
-	@Test(expected = IllegalArgumentException.class)
-	public void testPersonMissingName() {
+	@Test
+	void testPersonMissingName() {
 		Calendar cDOB = Calendar.getInstance();
 		cDOB.set(1982,Calendar.MARCH,4);
 		Date dDOB = cDOB.getTime();
-		new Person(null, dDOB);
-		// No assert statement - should throw an exception
+		assertThrows(IllegalArgumentException.class, () -> new Person(null, dDOB));
 	}
 	
 	/**
 	 * Test method for Person Constructor.
 	 * Missing date.
 	 */
-	@Test(expected = IllegalArgumentException.class)
-	public void testPersonMissingDate() {
-		new Person(new Name("Jane", "Smith"), null);
-		// No assert statement - should throw an exception
+	@Test
+	void testPersonMissingDate() {
+		final Name janeSmith = new Name("Jane", "Smith");
+		assertThrows(IllegalArgumentException.class, () -> new Person(janeSmith, null));
 	}
 	
 	/**
 	 * Test method for Person Constructor.
 	 * Invalid date.
 	 */
-	@Test(expected = IllegalArgumentException.class)
-	public void testPersonInvalidDate() {
+	@Test
+	void testPersonInvalidDate() {
 		Calendar cDOB = Calendar.getInstance();
 		cDOB.set(2999,Calendar.MARCH,4);
 		Date dDOB = cDOB.getTime();
-		new Person(new Name("Michael", "Brown"), dDOB);
-		// No assert statement - should throw an exception
+		final Name michaelBrown = new Name("Michael", "Brown");
+		assertThrows(IllegalArgumentException.class, () -> new Person(michaelBrown, dDOB));
 	}
 
 	/**
 	 * Test method for Person.getName method.
 	 */
 	@Test
-	public void testGetName() {
+	void testGetName() {
 		Calendar cDOB = Calendar.getInstance();
 		cDOB.set(1990,Calendar.APRIL,15);
 		Date dDOB = cDOB.getTime();
@@ -85,7 +81,7 @@ public class PersonTest {
 	 * Test method for Person.getBirthDate method.
 	 */
 	@Test
-	public void testGetBirthDate() {
+	void testGetBirthDate() {
 		Calendar cDOB = Calendar.getInstance();
 		cDOB.set(1979,Calendar.SEPTEMBER,7);
 		Date dDOB1 = cDOB.getTime();
@@ -99,8 +95,9 @@ public class PersonTest {
 	/**
 	 * Test method for Person.equals method.
 	 */
+	@SuppressWarnings("squid:S5785") // testing the custom equals method
 	@Test
-	public void testEquals() {
+	void testEquals() {
 		Calendar cDOB = Calendar.getInstance();
 		cDOB.set(1992,Calendar.MAY,29);
 		Date dDOB1 = cDOB.getTime();
@@ -135,7 +132,7 @@ public class PersonTest {
 	 * Tests that when two Person objects are equal, so are their hashcodes.
 	 */
 	@Test
-	public void testHashCode() {
+	void testHashCode() {
 		Calendar cDOB = Calendar.getInstance();
 		cDOB.set(1987,Calendar.JANUARY,1);
 		Date dDOB1 = cDOB.getTime();
@@ -150,7 +147,7 @@ public class PersonTest {
 	 * Test method for Person.toString method.
 	 */
 	@Test
-	public void testToString() {
+	void testToString() {
 		Calendar cDOB = Calendar.getInstance();
 		cDOB.set(1975,Calendar.JULY,18);
 		Date dDOB = cDOB.getTime();
