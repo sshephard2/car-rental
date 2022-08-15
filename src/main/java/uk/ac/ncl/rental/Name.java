@@ -33,10 +33,10 @@ public final class Name {
 		if (last == null) {
 			throw new IllegalArgumentException("Last name cannot be null");
 		}
-		if (!first.matches("[A-Z]{1}[a-z]*")) {
+		if (!first.matches("[A-Z][a-z]*")) {
 			throw new IllegalArgumentException("First name must begin with an uppercase letter followed only by lowercase letters");
 		}
-		if (!last.matches("[A-Z]{1}[a-z]*")) {
+		if (!last.matches("[A-Z][a-z]*")) {
 			throw new IllegalArgumentException("Last name must begin with an uppercase letter followed only by lowercase letters");
 		}
 		firstName = first;
@@ -115,8 +115,8 @@ public final class Name {
 		if (names.length!=2) {
 			throw new IllegalArgumentException("There must be two names separated by space");
 		}
-		final String firstname = names[0].equals(null) ? null : names[0];
-		final String lastname = names[1].equals(null) ? null : names[1];
+		final String firstname = names[0];
+		final String lastname = names[1];
 		
 		return new Name(firstname, lastname);
 	}

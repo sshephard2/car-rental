@@ -1,11 +1,6 @@
 package uk.ac.ncl.rental;
 
-import java.util.Set;
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Iterator;
+import java.util.*;
 
 /**
  * RentalCompany class.  The RentalCompany class represents a Car Rental company.
@@ -14,7 +9,9 @@ import java.util.Iterator;
  * @version 1.0
  */
 public final class RentalCompany {
-	
+
+	public static final String SMALL_CAR = "SmallCar";
+	public static final String LARGE_CAR = "LargeCar";
 	/**
 	 * Set of cars in the company's fleet.
 	 */
@@ -30,8 +27,8 @@ public final class RentalCompany {
 	 */
 	public RentalCompany() {
 		// Create empty fleet and rentals structures
-		fleet = new HashSet<Car>();
-		rentals = new HashMap<Person, Car>();
+		fleet = new HashSet<>();
+		rentals = new HashMap<>();
 	}
 	
 	/**
@@ -62,22 +59,16 @@ public final class RentalCompany {
 		if (typeOfCar == null) {
 			throw new IllegalArgumentException("typeOfCar parameter cannot be null");
 		}
-		if (!typeOfCar.equals("SmallCar") && !typeOfCar.equals("LargeCar")) {
+		if (!typeOfCar.equals(SMALL_CAR) && !typeOfCar.equals(LARGE_CAR)) {
 			throw new IllegalArgumentException("typeOfCar parameter must be SmallCar or LargeCar");
 		}
-		// Start counting available cars
-		int availableCars = 0;
-		for (Car car: fleet) {
-			// A car is available if it exists in the fleet but not in the rentals structure
-			// Note: typeOfCar is not compared directly with the class name of car, this would break if the class name was refactored
-			if (typeOfCar.equals("SmallCar") && (car instanceof SmallCar) && !rentals.containsValue(car)) {
-				availableCars++;
-			}
-			if (typeOfCar.equals("LargeCar") && (car instanceof LargeCar) && !rentals.containsValue(car)) {
-				availableCars++;
-			}
-		}
-		return availableCars;
+
+		// A car is available if it exists in the fleet but not in the rentals structure
+		if (typeOfCar.equals(SMALL_CAR))
+			return (int) fleet.stream().filter(c -> c instanceof SmallCar && !rentals.containsValue(c)).count();
+
+		// Not small car, so must be large car
+		return (int) fleet.stream().filter(c -> c instanceof LargeCar && !rentals.containsValue(c)).count();
 	}
 	
 	/**
@@ -86,12 +77,7 @@ public final class RentalCompany {
 	 */
 	public Set<Car> getRentedCars() {
 		// Defensive copy of set of cars from rentals HashMap
-		Set<Car> rentedCarSet = new HashSet<Car>();
-		for (Car car: rentals.values()) {
-			// Note: cannot produce a defensive copy of car due to the unique RegistrationNumber constraint
-			rentedCarSet.add(car);
-		}
-		return rentedCarSet;
+		return new HashSet<>(rentals.values());
 	}
 	
 	/**
@@ -122,64 +108,24 @@ public final class RentalCompany {
 	 * @throws IllegalArgumentException if any null parameter or invalid typeOfCar are supplied.
 	 */
 	public boolean issueCar(Person person, DrivingLicence drivingLicence, String typeOfCar) {
-		// Check parameters
-		if (person == null) {
-			throw new IllegalArgumentException("person parameter cannot be null");
-		}
-		if (drivingLicence == null) {
-			throw new IllegalArgumentException("drivingLicence parameter cannot be null");
-		}
-		if (typeOfCar == null) {
-			throw new IllegalArgumentException("typeOfCar parameter cannot be null");
-		}
-		if (!typeOfCar.equals("SmallCar") && !typeOfCar.equals("LargeCar")) {
-			throw new IllegalArgumentException("typeOfCar parameter must be SmallCar or LargeCar");
-		}
-		
-		// The driving licence must be full 
-		if (!drivingLicence.getFull()) {
-			return false;
-		}
+		checkParameters(person, drivingLicence, typeOfCar);
 
-		// The Person cannot rent more than one car at a time
-		if (rentals.containsKey(person)) {
-			return false;
-		}
+		if (personCannotRentCar(person, drivingLicence, typeOfCar)) return false;
 
-		// To rent a small car, they must be at least 20 years old
-		// To rent a large car, they must be at least 25 years old
-		Calendar cBirthCheck = Calendar.getInstance();
-		cBirthCheck.add(Calendar.YEAR, (typeOfCar.equals("SmallCar") ? -20 : -25));
-		if (person.getBirthDate().compareTo(cBirthCheck.getTime()) > 0) {
-			return false;
-		}
-		
-		// To rent a small car, they must have held their licence for at least 1 year
-		// To rent a large car, they must have held their licence for at least 5 years
-		Calendar cIssuedCheck = Calendar.getInstance();
-		cIssuedCheck.add(Calendar.YEAR, (typeOfCar.equals("SmallCar") ? -1 : -5));
-		if (drivingLicence.getIssued().compareTo(cIssuedCheck.getTime()) > 0) {
-			return false;
-		}
-		
 		// There must be cars of the requested type available
 		if (this.availableCars(typeOfCar) == 0) {
 			return false;
 		}
 
 		// There is an available car, so go find it
-		Car car = null;
-		boolean carFound = false;
-		Iterator<Car> iterator = fleet.iterator(); // Use an iterator and stop searching as soon as a car is found
-		while (iterator.hasNext() && !carFound) {
-			car = iterator.next();
-			if (typeOfCar.equals("SmallCar") && (car instanceof SmallCar) && !rentals.containsValue(car)) {
-				carFound = true;
-			}
-			if (typeOfCar.equals("LargeCar") && (car instanceof LargeCar) && !rentals.containsValue(car)) {
-				carFound = true;
-			}
-		}
+		Optional<Car> foundCar = Optional.empty();
+		if (typeOfCar.equals(SMALL_CAR))
+			foundCar = fleet.stream().filter(c -> c instanceof SmallCar && !rentals.containsValue(c)).findFirst();
+		if (typeOfCar.equals(LARGE_CAR))
+			foundCar = fleet.stream().filter(c -> c instanceof LargeCar && !rentals.containsValue(c)).findFirst();
+
+		if (foundCar.isEmpty()) return false;
+		Car car = foundCar.orElseThrow();
 	 
 		// Amount of fuel in Litres required to fill the car's tank
 		int fuelRequired = car.getCapacity() - car.getFuel();
@@ -195,7 +141,48 @@ public final class RentalCompany {
 
 		return true;
 	}
-	
+
+	private boolean personCannotRentCar(Person person, DrivingLicence drivingLicence, String typeOfCar) {
+		// The driving licence must be full
+		if (!drivingLicence.getFull()) {
+			return true;
+		}
+
+		// The Person cannot rent more than one car at a time
+		if (rentals.containsKey(person)) {
+			return true;
+		}
+
+		// To rent a small car, they must be at least 20 years old
+		// To rent a large car, they must be at least 25 years old
+		Calendar cBirthCheck = Calendar.getInstance();
+		cBirthCheck.add(Calendar.YEAR, (typeOfCar.equals(SMALL_CAR) ? -20 : -25));
+		if (person.getBirthDate().compareTo(cBirthCheck.getTime()) > 0) {
+			return true;
+		}
+
+		// To rent a small car, they must have held their licence for at least 1 year
+		// To rent a large car, they must have held their licence for at least 5 years
+		Calendar cIssuedCheck = Calendar.getInstance();
+		cIssuedCheck.add(Calendar.YEAR, (typeOfCar.equals(SMALL_CAR) ? -1 : -5));
+		return drivingLicence.getIssued().compareTo(cIssuedCheck.getTime()) > 0;
+	}
+
+	private static void checkParameters(Person person, DrivingLicence drivingLicence, String typeOfCar) {
+		if (person == null) {
+			throw new IllegalArgumentException("person parameter cannot be null");
+		}
+		if (drivingLicence == null) {
+			throw new IllegalArgumentException("drivingLicence parameter cannot be null");
+		}
+		if (typeOfCar == null) {
+			throw new IllegalArgumentException("typeOfCar parameter cannot be null");
+		}
+		if (!typeOfCar.equals(SMALL_CAR) && !typeOfCar.equals(LARGE_CAR)) {
+			throw new IllegalArgumentException("typeOfCar parameter must be SmallCar or LargeCar");
+		}
+	}
+
 	/**
 	 * This method terminates the given person's rental contract.
 	 * If a person attempts to terminate a nonexistent contract, this method does nothing.

@@ -1,11 +1,7 @@
 package uk.ac.ncl.rental;
 
-import static org.junit.Assert.*;
-
-import org.junit.Test;
-
-import uk.ac.ncl.rental.SmallCar;
-import uk.ac.ncl.rental.LargeCar;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * CarTest class.  JUnit test cases for the SmallCar and LargeCar classes.
@@ -13,13 +9,13 @@ import uk.ac.ncl.rental.LargeCar;
  * @version 1.0
  *
  */
-public class CarTest {
+class CarTest {
 
 	/**
 	 * Test method for SmallCar Constructor.
 	 */
 	@Test
-	public void testSmallCar() {
+	void testSmallCar() {
 		SmallCar car = new SmallCar("AB01 NCL");	
 		// An object should have been created
 		assertNotNull(car);
@@ -29,28 +25,26 @@ public class CarTest {
 	 * Test method for SmallCar Constructor.
 	 * Invalid registration number.
 	 */
-	@Test(expected = IllegalArgumentException.class)
-	public void testInvalidSmallCar() {
-		new SmallCar("ABXY NCL");	
-		// No assertion, test method should throw expected Exception type
+	@Test
+	void testInvalidSmallCar() {
+		assertThrows(IllegalArgumentException.class, () -> new SmallCar("ABXY NCL"));
 	}
 	
 	/**
 	 * Test method for SmallCar Constructor.
 	 * Should not allow duplicate registration number.
 	 */
-	@Test(expected = IllegalStateException.class)
-	public void testDuplicateSmallCar() {
+	@Test
+	void testDuplicateSmallCar() {
 		new SmallCar("AB01 ABC");
-		new SmallCar("AB01 ABC"); // Duplicate Registration Number
-		// No assertion, test method should throw expected Exception type
+		assertThrows(IllegalStateException.class, () -> new SmallCar("AB01 ABC")); // Duplicate Registration Number
 	}
 	
 	/**
 	 * Test method for LargeCar Constructor.
 	 */
 	@Test
-	public void testLargeCar() {
+	void testLargeCar() {
 		LargeCar car = new LargeCar("LC01 NCL");	
 		// An object should have been created
 		assertNotNull(car);
@@ -60,32 +54,29 @@ public class CarTest {
 	 * Test method for LargeCar Constructor.
 	 * Invalid registration number.
 	 */
-	@Test(expected = IllegalArgumentException.class)
-	public void testInvalidLargeCar() {
-		new LargeCar("LCXY NCL");	
-		// No assertion, test method should throw expected Exception type
+	@Test
+	void testInvalidLargeCar() {
+		assertThrows(IllegalArgumentException.class, () -> new LargeCar("LCXY NCL"));
 	}
 	
 	/**
 	 * Test method for LargeCar Constructor.
 	 * Should not allow duplicate registration number.
 	 */
-	@Test(expected = IllegalStateException.class)
-	public void testDuplicateLargeCar() {
+	@Test
+	void testDuplicateLargeCar() {
 		new LargeCar("LC01 ABC");
-		new LargeCar("LC01 ABC"); // Duplicate Registration Number
-		// No assertion, test method should throw expected Exception type
+		assertThrows(IllegalStateException.class, () -> new LargeCar("LC01 ABC")); // Duplicate Registration Number
 	}
 	
 	/**
 	 * Test method for SmallCar and LargeCar Constructors.
 	 * Should not allow duplicate registration number across both types of car.
 	 */
-	@Test(expected = IllegalStateException.class)
-	public void testDuplicateCar() {
+	@Test
+	void testDuplicateCar() {
 		new SmallCar("AB11 NEA");
-		new LargeCar("AB11 NEA"); // Duplicate Registration Number
-		// No assertion, test method should throw expected Exception type
+		assertThrows(IllegalStateException.class, () -> new LargeCar("AB11 NEA")); // Duplicate Registration Number
 	}
 
 	/**
@@ -93,7 +84,7 @@ public class CarTest {
 	 * Capacity of a small car should be 49 litres.
 	 */
 	@Test
-	public void testGetCapacitySmall() {
+	void testGetCapacitySmall() {
 		SmallCar car = new SmallCar("AB02 MSC");
 		assertEquals(49, car.getCapacity());
 	}
@@ -103,7 +94,7 @@ public class CarTest {
 	 * Capacity of a large car should be 60 litres.
 	 */
 	@Test
-	public void testGetCapacityLarge() {
+	void testGetCapacityLarge() {
 		LargeCar car = new LargeCar("CD02 MSC");
 		assertEquals(60, car.getCapacity());
 	}
@@ -112,7 +103,7 @@ public class CarTest {
 	 * Test method for SmallCar.getRegistrationNumber method.
 	 */
 	@Test
-	public void testGetRegistrationNumberSmall() {
+	void testGetRegistrationNumberSmall() {
 		SmallCar car = new SmallCar("AB05 TBD");
 		assertEquals("AB05 TBD", car.getRegistrationNumber().toString());
 	}
@@ -121,7 +112,7 @@ public class CarTest {
 	 * Test method for LargeCar.getRegistrationNumber method.
 	 */
 	@Test
-	public void testGetRegistrationNumberLarge() {
+	void testGetRegistrationNumberLarge() {
 		LargeCar car = new LargeCar("LC05 TBD");
 		assertEquals("LC05 TBD", car.getRegistrationNumber().toString());
 	}
@@ -130,7 +121,7 @@ public class CarTest {
 	 * Test method for SmallCar.getFuel method.
 	 */
 	@Test
-	public void testGetFuelSmall() {
+	void testGetFuelSmall() {
 		SmallCar car = new SmallCar("AB03 COL");
 		assertEquals(0, car.getFuel());
 		car.fillTank(1);
@@ -141,7 +132,7 @@ public class CarTest {
 	 * Test method for LargeCar.getFuel method.
 	 */
 	@Test
-	public void testGetFuelLarge() {
+	void testGetFuelLarge() {
 		LargeCar car = new LargeCar("LC03 COL");
 		assertEquals(0, car.getFuel());
 		car.fillTank(1);
@@ -152,7 +143,7 @@ public class CarTest {
 	 * Test method for SmallCar.isTankFull method.
 	 */
 	@Test
-	public void testIsTankFullSmall() {
+	void testIsTankFullSmall() {
 		SmallCar car = new SmallCar("AB04 TBD");
 		assertFalse(car.isTankFull());
 		car.fillTank(49);
@@ -163,7 +154,7 @@ public class CarTest {
 	 * Test method for LargeCar.isTankFull method.
 	 */
 	@Test
-	public void testIsTankFullLarge() {
+	void testIsTankFullLarge() {
 		LargeCar car = new LargeCar("LC04 TBD");
 		assertFalse(car.isTankFull());
 		car.fillTank(60);
@@ -175,7 +166,7 @@ public class CarTest {
 	 * Under capacity.
 	 */
 	@Test
-	public void testFillTankLargeUnder() {
+	void testFillTankLargeUnder() {
 		LargeCar car = new LargeCar("LC06 XXX");
 		assertEquals(50, car.fillTank(50));
 	}
@@ -185,7 +176,7 @@ public class CarTest {
 	 * Over capacity from empty.
 	 */
 	@Test
-	public void testFillTankLargeOverFromEmpty() {
+	void testFillTankLargeOverFromEmpty() {
 		LargeCar car = new LargeCar("LC07 YYY");
 		assertEquals(60, car.fillTank(65));
 	}
@@ -195,7 +186,7 @@ public class CarTest {
 	 * Over capacity from partial.
 	 */
 	@Test
-	public void testFillTankLargeOverFromPartial() {
+	void testFillTankLargeOverFromPartial() {
 		LargeCar car = new LargeCar("LC08 ZZZ");
 		assertEquals(50, car.fillTank(50));
 		assertEquals(10, car.fillTank(20));
@@ -206,7 +197,7 @@ public class CarTest {
 	 * Under capacity.
 	 */
 	@Test
-	public void testFillTankSmallUnder() {
+	void testFillTankSmallUnder() {
 		SmallCar car = new SmallCar("AB06 XXX");
 		assertEquals(40, car.fillTank(40));
 	}
@@ -216,7 +207,7 @@ public class CarTest {
 	 * Over capacity from empty.
 	 */
 	@Test
-	public void testFillTankSmallOverFromEmpty() {
+	void testFillTankSmallOverFromEmpty() {
 		SmallCar car = new SmallCar("AB07 YYY");
 		assertEquals(49, car.fillTank(50));
 	}
@@ -226,7 +217,7 @@ public class CarTest {
 	 * Over capacity from partial.
 	 */
 	@Test
-	public void testFillTankSmallOverFromPartial() {
+	void testFillTankSmallOverFromPartial() {
 		SmallCar car = new SmallCar("AB08 ZZZ");
 		assertEquals(30, car.fillTank(30));
 		assertEquals(19, car.fillTank(30));
@@ -236,7 +227,7 @@ public class CarTest {
 	 * Test method for SmallCar.isRented method.
 	 */
 	@Test
-	public void testSmallCarIsRented() {
+	void testSmallCarIsRented() {
 		SmallCar car = new SmallCar("AB11 GHJ");
 		assertFalse(car.isRented());
 	}
@@ -245,7 +236,7 @@ public class CarTest {
 	 * Test method for SmallCar.setRental method.
 	 */
 	@Test
-	public void testSmallCarSetRental() {
+	void testSmallCarSetRental() {
 		SmallCar car = new SmallCar("AB12 KLM");
 		car.setRental(true);
 		assertTrue(car.isRented());
@@ -255,7 +246,7 @@ public class CarTest {
 	 * Test method for LargeCar.isRented method.
 	 */
 	@Test
-	public void testLargeCarIsRented() {
+	void testLargeCarIsRented() {
 		LargeCar car = new LargeCar("LC11 GHJ");
 		assertFalse(car.isRented());
 	}
@@ -264,7 +255,7 @@ public class CarTest {
 	 * Test method for LargeCar.setRental method.
 	 */
 	@Test
-	public void testLargeCarSetRental() {
+	void testLargeCarSetRental() {
 		LargeCar car = new LargeCar("LC12 KLM");
 		car.setRental(true);
 		assertTrue(car.isRented());
@@ -274,7 +265,7 @@ public class CarTest {
 	 * Test method for SmallCar.toString method.
 	 */
 	@Test
-	public void testSmallCarToString() {
+	void testSmallCarToString() {
 		SmallCar car = new SmallCar("AB09 ABC");
 		assertEquals("SmallCar,AB09 ABC,0", car.toString());
 	}
@@ -283,7 +274,7 @@ public class CarTest {
 	 * Test method for LargeCar.toString method.
 	 */
 	@Test
-	public void testLargeCarToString() {
+	void testLargeCarToString() {
 		LargeCar car = new LargeCar("AB10 DEF");
 		assertEquals("LargeCar,AB10 DEF,0", car.toString());
 	}
@@ -292,22 +283,20 @@ public class CarTest {
 	 * Test method for SmallCar.drive method.
 	 * Invalid (negative) distance.
 	 */
-	@Test(expected = IllegalArgumentException.class)
-	public void testDriveSmallInvalidDistance() {
+	@Test
+	void testDriveSmallInvalidDistance() {
 		SmallCar car = new SmallCar("AB15 WXZ");
-		car.drive(-1);
-		// No assertion, test method should throw expected Exception type
+		assertThrows(IllegalArgumentException.class, () -> car.drive(-1));
 	}
 	
 	/**
 	 * Test method for SmallCar.drive method.
 	 * Invalid as car not rented.
 	 */
-	@Test(expected = IllegalStateException.class)
-	public void testDriveSmallNotRented() {
+	@Test
+	void testDriveSmallNotRented() {
 		SmallCar car = new SmallCar("AB13 NPQ");
-		car.drive(10);
-		// No assertion, test method should throw expected Exception type
+		assertThrows(IllegalStateException.class, () -> car.drive(10));
 	}
 	
 	/**
@@ -315,7 +304,7 @@ public class CarTest {
 	 * Rented but no fuel.
 	 */
 	@Test
-	public void testDriveSmallNoFuel() {
+	void testDriveSmallNoFuel() {
 		SmallCar car = new SmallCar("AB14 RST");
 		car.setRental(true);
 		assertEquals(0, car.drive(10));
@@ -326,7 +315,7 @@ public class CarTest {
 	 * Journey within tank fuel.
 	 */
 	@Test
-	public void testDriveSmallUnderCapacity() {
+	void testDriveSmallUnderCapacity() {
 		SmallCar car = new SmallCar("AB16 AAB");
 		car.setRental(true);
 		car.fillTank(10);
@@ -342,7 +331,7 @@ public class CarTest {
 	 * Journey over tank fuel.
 	 */
 	@Test
-	public void testDriveSmallOverCapacity() {
+	void testDriveSmallOverCapacity() {
 		SmallCar car = new SmallCar("AB17 ACD");
 		car.setRental(true);
 		car.fillTank(1); // 1 litre in tank
@@ -354,22 +343,20 @@ public class CarTest {
 	 * Test method for LargeCar.drive method.
 	 * Invalid (negative) distance.
 	 */
-	@Test(expected = IllegalArgumentException.class)
-	public void testDriveLargeInvalidDistance() {
+	@Test
+	void testDriveLargeInvalidDistance() {
 		LargeCar car = new LargeCar("LC15 WXZ");
-		car.drive(-1);
-		// No assertion, test method should throw expected Exception type
+		assertThrows(IllegalArgumentException.class, () -> car.drive(-1));
 	}
 	
 	/**
 	 * Test method for LargeCar.drive method.
 	 * Invalid as car not rented.
 	 */
-	@Test(expected = IllegalStateException.class)
-	public void testDriveLargeNotRented() {
+	@Test
+	void testDriveLargeNotRented() {
 		LargeCar car = new LargeCar("LC13 NPQ");
-		car.drive(10);
-		// No assertion, test method should throw expected Exception type
+		assertThrows(IllegalStateException.class, () -> car.drive(10));
 	}
 	
 	/**
@@ -377,7 +364,7 @@ public class CarTest {
 	 * Rented but no fuel.
 	 */
 	@Test
-	public void testDriveLargeNoFuel() {
+	void testDriveLargeNoFuel() {
 		LargeCar car = new LargeCar("LC14 RST");
 		car.setRental(true);
 		assertEquals(0, car.drive(10));
@@ -388,7 +375,7 @@ public class CarTest {
 	 * Journey within tank fuel.
 	 */
 	@Test
-	public void testDriveLargeUnderCapacity() {
+	void testDriveLargeUnderCapacity() {
 		LargeCar car = new LargeCar("LC16 AAB");
 		car.setRental(true);
 		car.fillTank(60);
@@ -410,7 +397,7 @@ public class CarTest {
 	 * Journey over tank fuel.
 	 */
 	@Test
-	public void testDriveLargeOverCapacity() {
+	void testDriveLargeOverCapacity() {
 		LargeCar car = new LargeCar("LC17 ACD");
 		car.setRental(true);
 		car.fillTank(1); // 1 litre in tank
