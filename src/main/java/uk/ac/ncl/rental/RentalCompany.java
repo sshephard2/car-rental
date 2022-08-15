@@ -62,19 +62,13 @@ public final class RentalCompany {
 		if (!typeOfCar.equals(SMALL_CAR) && !typeOfCar.equals(LARGE_CAR)) {
 			throw new IllegalArgumentException("typeOfCar parameter must be SmallCar or LargeCar");
 		}
-		// Start counting available cars
-		int availableCars = 0;
-		for (Car car: fleet) {
-			// A car is available if it exists in the fleet but not in the rentals structure
-			// Note: typeOfCar is not compared directly with the class name of car, this would break if the class name was refactored
-			if (typeOfCar.equals(SMALL_CAR) && (car instanceof SmallCar) && !rentals.containsValue(car)) {
-				availableCars++;
-			}
-			if (typeOfCar.equals(LARGE_CAR) && (car instanceof LargeCar) && !rentals.containsValue(car)) {
-				availableCars++;
-			}
-		}
-		return availableCars;
+
+		// A car is available if it exists in the fleet but not in the rentals structure
+		if (typeOfCar.equals(SMALL_CAR))
+			return (int) fleet.stream().filter(c -> c instanceof SmallCar && !rentals.containsValue(c)).count();
+
+		// Not small car, so must be large car
+		return (int) fleet.stream().filter(c -> c instanceof LargeCar && !rentals.containsValue(c)).count();
 	}
 	
 	/**
@@ -118,27 +112,20 @@ public final class RentalCompany {
 
 		if (personCannotRentCar(person, drivingLicence, typeOfCar)) return false;
 
-		//TODO refactor using stream and returning Optional
 		// There must be cars of the requested type available
 		if (this.availableCars(typeOfCar) == 0) {
 			return false;
 		}
 
 		// There is an available car, so go find it
-		Car car = null;
-		boolean carFound = false;
-		Iterator<Car> iterator = fleet.iterator(); // Use an iterator and stop searching as soon as a car is found
-		while (iterator.hasNext() && !carFound) {
-			car = iterator.next();
-			if (typeOfCar.equals(SMALL_CAR) && (car instanceof SmallCar) && !rentals.containsValue(car)) {
-				carFound = true;
-			}
-			if (typeOfCar.equals(LARGE_CAR) && (car instanceof LargeCar) && !rentals.containsValue(car)) {
-				carFound = true;
-			}
-		}
+		Optional<Car> foundCar = Optional.empty();
+		if (typeOfCar.equals(SMALL_CAR))
+			foundCar = fleet.stream().filter(c -> c instanceof SmallCar && !rentals.containsValue(c)).findFirst();
+		if (typeOfCar.equals(LARGE_CAR))
+			foundCar = fleet.stream().filter(c -> c instanceof LargeCar && !rentals.containsValue(c)).findFirst();
 
-		if (!carFound) return false;
+		if (foundCar.isEmpty()) return false;
+		Car car = foundCar.orElseThrow();
 	 
 		// Amount of fuel in Litres required to fill the car's tank
 		int fuelRequired = car.getCapacity() - car.getFuel();

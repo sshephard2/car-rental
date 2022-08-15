@@ -5,7 +5,8 @@ package uk.ac.ncl.rental;
 
 import org.junit.jupiter.api.Test;
 
-import java.util.Calendar;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.Date;
 import java.util.Set;
 
@@ -107,6 +108,20 @@ class RentalCompanyTest {
 		assertThrows(IllegalArgumentException.class, () -> rentCo.availableCars("MediumCar"));
 	}
 
+	private Person personFixture(String firstname, String lastname, long age)
+	{
+		LocalDate ldDOB = LocalDate.now().minusYears(age);
+		Date dDOB = Date.from(ldDOB.atStartOfDay(ZoneId.systemDefault()).toInstant());
+		return new Person(new Name(firstname, lastname), dDOB);
+	}
+
+	private DrivingLicence dlFixture(Person p, long issuedAge, boolean full)
+	{
+		LocalDate ldIssued = LocalDate.now().minusYears(issuedAge);
+		Date dIssued = Date.from(ldIssued.atStartOfDay(ZoneId.systemDefault()).toInstant());
+		return new DrivingLicence(p.getName(), dIssued, full);
+	}
+
 	/**
 	 * Test method for RentalCompany.getRentedCars method.
 	 */
@@ -122,26 +137,12 @@ class RentalCompanyTest {
 		// Only one large car, to test that this one is issued
 		LargeCar lc = new LargeCar("LC01 GGG");
 		rentCo.addCar(lc);
-		
-		Calendar cDOB1 = Calendar.getInstance();
-		cDOB1.set(1971,Calendar.DECEMBER,18);
-		Date dDOB1 = cDOB1.getTime();
-		Name name1 = new Name("Stephen", "Shephard");
-		Person p1 = new Person(name1, dDOB1);
-		Calendar cIssued1 = Calendar.getInstance();
-		cIssued1.set(1990,Calendar.OCTOBER,20);
-		Date issued1 = cIssued1.getTime();
-		DrivingLicence dl1 = new DrivingLicence(name1, issued1, true);
-		
-		Calendar cDOB2 = Calendar.getInstance();
-		cDOB2.set(1978,Calendar.APRIL,5);
-		Date dDOB2 = cDOB2.getTime();
-		Name name2 = new Name("Jane", "Smith");
-		Person p2 = new Person(name2, dDOB2);
-		Calendar cIssued2 = Calendar.getInstance();
-		cIssued2.set(2008,Calendar.JULY,17);
-		Date issued2 = cIssued2.getTime();
-		DrivingLicence dl2 = new DrivingLicence(name2, issued2, true);
+
+		Person p1 = personFixture("Stephen", "Shephard", 50);
+		DrivingLicence dl1 = dlFixture(p1, 30, true);
+
+		Person p2 = personFixture("Jane", "Smith", 32);
+		DrivingLicence dl2 = dlFixture(p2, 17, true);
 		
 		// No rented cars at this point
 		rentedSet = rentCo.getRentedCars();
@@ -176,19 +177,12 @@ class RentalCompanyTest {
 		// Only one large car, to test that this one is issued and returned
 		LargeCar lc = new LargeCar("LC01 EEE");
 		rentCo.addCar(lc);
+
+		Person p1 = personFixture("Stephen", "Shephard", 50);
+		DrivingLicence dl1 = dlFixture(p1, 30, true);
 		
-		Calendar cDOB = Calendar.getInstance();
-		cDOB.set(1971,Calendar.DECEMBER,18);
-		Date dDOB = cDOB.getTime();
-		Name name = new Name("Stephen", "Shephard");
-		Person p = new Person(name, dDOB);
-		Calendar cIssued = Calendar.getInstance();
-		cIssued.set(1990,Calendar.OCTOBER,20);
-		Date issued = cIssued.getTime();
-		DrivingLicence dl = new DrivingLicence(name, issued, true);
-		
-		rentCo.issueCar(p, dl, "LargeCar");
-		assertSame(lc, rentCo.getCar(p));
+		rentCo.issueCar(p1, dl1, "LargeCar");
+		assertSame(lc, rentCo.getCar(p1));
 	}
 	
 	/**
@@ -217,25 +211,22 @@ class RentalCompanyTest {
 			LargeCar lc = new LargeCar(String.format("LC%1$02d DDD", i));
 			rentCo.addCar(lc);
 		}
-		
-		Calendar cDOB = Calendar.getInstance();
-		cDOB.set(1971,Calendar.DECEMBER,18);
-		Date dDOB = cDOB.getTime();
-		Name name = new Name("Stephen", "Shephard");
-		Person p = new Person(name, dDOB);
-		Calendar cIssued = Calendar.getInstance();
-		cIssued.set(1990,Calendar.OCTOBER,20);
-		Date issued = cIssued.getTime();
-		DrivingLicence dl = new DrivingLicence(name, issued, true);
+
+		Person p1 = personFixture("Stephen", "Shephard", 50);
+		DrivingLicence dl1 = dlFixture(p1, 30, true);
 		
 		// Check that there were 10 large cars available to rent
 		assertEquals(10, rentCo.availableCars("LargeCar"));
 		
 		// Check car issued returns true
-		assertTrue(rentCo.issueCar(p, dl, "LargeCar"));
-		
+		assertTrue(rentCo.issueCar(p1, dl1, "LargeCar"));
+
+		// Check car can be returned
+		Car car = rentCo.getCar(p1);
+		assertNotNull(car);
+
 		// Check car's tank is full
-		assertTrue(rentCo.getCar(p).isTankFull());
+		assertTrue(car.isTankFull());
 		
 		// Check that there are now only 9 available large cars to rent
 		assertEquals(9, rentCo.availableCars("LargeCar"));
@@ -248,14 +239,11 @@ class RentalCompanyTest {
 	@Test
 	void testIssueCarPersonNull() {
 		RentalCompany rentCo = new RentalCompany();
-		
-		Name name = new Name("Stephen", "Shephard");
-		Calendar cIssued = Calendar.getInstance();
-		cIssued.set(1990,Calendar.OCTOBER,20);
-		Date issued = cIssued.getTime();
-		DrivingLicence dl = new DrivingLicence(name, issued, true);
 
-		assertThrows(IllegalArgumentException.class, () -> rentCo.issueCar(null, dl, "LargeCar"));
+		Person p1 = personFixture("Stephen", "Shephard", 50);
+		DrivingLicence dl1 = dlFixture(p1, 30, true);
+
+		assertThrows(IllegalArgumentException.class, () -> rentCo.issueCar(null, dl1, "LargeCar"));
 	}
 	
 	/**
@@ -265,14 +253,10 @@ class RentalCompanyTest {
 	@Test
 	void testIssueCarDrivingLicenceNull() {
 		RentalCompany rentCo = new RentalCompany();
-		
-		Calendar cDOB = Calendar.getInstance();
-		cDOB.set(1971,Calendar.DECEMBER,18);
-		Date dDOB = cDOB.getTime();
-		Name name = new Name("Stephen", "Shephard");
-		Person p = new Person(name, dDOB);
 
-		assertThrows(IllegalArgumentException.class, () -> rentCo.issueCar(p, null, "LargeCar"));
+		Person p1 = personFixture("Stephen", "Shephard", 50);
+
+		assertThrows(IllegalArgumentException.class, () -> rentCo.issueCar(p1, null, "LargeCar"));
 	}
 	
 	/**
@@ -282,18 +266,11 @@ class RentalCompanyTest {
 	@Test
 	void testIssueCarTypeOfCarNull() {
 		RentalCompany rentCo = new RentalCompany();
-		
-		Calendar cDOB = Calendar.getInstance();
-		cDOB.set(1971,Calendar.DECEMBER,18);
-		Date dDOB = cDOB.getTime();
-		Name name = new Name("Stephen", "Shephard");
-		Person p = new Person(name, dDOB);
-		Calendar cIssued = Calendar.getInstance();
-		cIssued.set(1990,Calendar.OCTOBER,20);
-		Date issued = cIssued.getTime();
-		DrivingLicence dl = new DrivingLicence(name, issued, true);
 
-		assertThrows(IllegalArgumentException.class, () -> rentCo.issueCar(p, dl, null));
+		Person p1 = personFixture("Stephen", "Shephard", 50);
+		DrivingLicence dl1 = dlFixture(p1, 30, true);
+
+		assertThrows(IllegalArgumentException.class, () -> rentCo.issueCar(p1, dl1, null));
 	}
 	
 	/**
@@ -303,25 +280,18 @@ class RentalCompanyTest {
 	@Test
 	void testIssueCarTypeOfCarInvalid() {
 		RentalCompany rentCo = new RentalCompany();
-		
-		Calendar cDOB = Calendar.getInstance();
-		cDOB.set(1971,Calendar.DECEMBER,18);
-		Date dDOB = cDOB.getTime();
-		Name name = new Name("Stephen", "Shephard");
-		Person p = new Person(name, dDOB);
-		Calendar cIssued = Calendar.getInstance();
-		cIssued.set(1990,Calendar.OCTOBER,20);
-		Date issued = cIssued.getTime();
-		DrivingLicence dl = new DrivingLicence(name, issued, true);
 
-		assertThrows(IllegalArgumentException.class, () -> rentCo.issueCar(p, dl, "MediumCar"));
+		Person p1 = personFixture("Stephen", "Shephard", 50);
+		DrivingLicence dl1 = dlFixture(p1, 30, true);
+
+		assertThrows(IllegalArgumentException.class, () -> rentCo.issueCar(p1, dl1, "MediumCar"));
 	}
 
 	/**
 	 * Test method for RentalCompany.issueCar method.
 	 * Unsuccessful issue.
 	 */
-	//TODO - make test independent of run date @Test
+	@Test
 	void testIssueCarFailure() {
 		RentalCompany rentCo = new RentalCompany();
 
@@ -332,73 +302,43 @@ class RentalCompanyTest {
 			LargeCar lc = new LargeCar(String.format("LC%1$02d HHH", i));
 			rentCo.addCar(lc);
 		}
-		
-		Calendar cDOB = Calendar.getInstance();
-		cDOB.set(1997,Calendar.OCTOBER,25);
-		Date dDOB_19yo = cDOB.getTime();
-		cDOB.set(1996,Calendar.OCTOBER,25);
-		Date dDOB_20yo = cDOB.getTime();
-		cDOB.set(1991,Calendar.OCTOBER,25);
-		Date dDOB_25yo = cDOB.getTime();
-		Date dDOB_25yo_copy = cDOB.getTime();
-		
-		Name name_19yo = new Name("Grace", "Liu");
-		Person p_19yo = new Person(name_19yo, dDOB_19yo);
-		
-		Name name_20yo = new Name("James", "Andrews");
-		Person p_20yo = new Person(name_20yo, dDOB_20yo);
-		Name name_20yo_twin = new Name("Michael", "Andrews");
-		Person p_20yo_twin = new Person(name_20yo_twin, dDOB_20yo);
-		
-		Name name_25yo = new Name("Abigail", "Tyler");
-		Person p_25yo = new Person(name_25yo, dDOB_25yo);
-		Name name_25yo_copy = new Name("Abigail", "Tyler");
-		Person p_25yo_copy = new Person(name_25yo_copy, dDOB_25yo_copy);
-		
-		Calendar cIssued = Calendar.getInstance();
-		cIssued.set(2016,Calendar.OCTOBER,25);
-		Date issued_new = cIssued.getTime();
-		cIssued.set(2015,Calendar.OCTOBER,25);
-		Date issued_1yo = cIssued.getTime();
-		cIssued.set(2011,Calendar.OCTOBER,25);
-		Date issued_5yo = cIssued.getTime();
-		
-		DrivingLicence dl = new DrivingLicence(name_25yo, issued_5yo, false);
+
+		Person p_19yo = personFixture("Grace", "Liu", 19);
+
+		Person p_20yo = personFixture("James", "Andrews", 20);
+		Person p_20yo_twin = personFixture("Michael", "Andrews", 20);
+
+		Person p_25yo = personFixture("Abigail", "Tyler", 25);
+		Person p_25yo_copy = personFixture("Abigail", "Tyler", 25);
 		
 		// Can't issue if Driving Licence isn't full
-		assertFalse(rentCo.issueCar(p_25yo, dl, "SmallCar"));
+		assertFalse(rentCo.issueCar(p_25yo, dlFixture(p_25yo, 5, false), "SmallCar"));
 		
 		// Can't issue a SmallCar (or LargeCar) if DrivingLicence has been held for less than 1 year
-		dl = new DrivingLicence(name_25yo, issued_new, true);
-		assertFalse(rentCo.issueCar(p_25yo, dl, "SmallCar"));
-		assertFalse(rentCo.issueCar(p_25yo, dl, "LargeCar"));
+		assertFalse(rentCo.issueCar(p_25yo, dlFixture(p_25yo, 0, true), "SmallCar"));
+		assertFalse(rentCo.issueCar(p_25yo, dlFixture(p_25yo, 0, true), "LargeCar"));
 		
 		// Can't issue a SmallCar (or LargeCar) if Person is less than 20 years old
-		dl = new DrivingLicence(name_19yo, issued_1yo, true);
-		assertFalse(rentCo.issueCar(p_19yo, dl, "SmallCar"));
-		assertFalse(rentCo.issueCar(p_19yo, dl, "LargeCar"));
+		assertFalse(rentCo.issueCar(p_19yo, dlFixture(p_19yo, 1, true), "SmallCar"));
+		assertFalse(rentCo.issueCar(p_19yo, dlFixture(p_19yo, 1, true), "LargeCar"));
 
 		// Can't issue a LargeCar if Person is less than 25 years old
-		dl = new DrivingLicence(name_20yo, issued_1yo, true);
-		assertFalse(rentCo.issueCar(p_20yo, dl, "LargeCar"));
+		assertFalse(rentCo.issueCar(p_20yo, dlFixture(p_20yo, 1, true), "LargeCar"));
 		
-		// Can't issue a LargeCar if if DrivingLicence has been held for less than 5 years
-		dl = new DrivingLicence(name_25yo, issued_1yo, true);
-		assertFalse(rentCo.issueCar(p_25yo, dl, "LargeCar"));
+		// Can't issue a LargeCar if DrivingLicence has been held for less than 5 years
+		assertFalse(rentCo.issueCar(p_25yo, dlFixture(p_25yo, 1, true), "LargeCar"));
 
 		// Can't rent more than one car at a time
-		dl = new DrivingLicence(name_25yo, issued_5yo, true);
+		DrivingLicence dl = dlFixture(p_25yo, 5, true);
 		assertTrue(rentCo.issueCar(p_25yo, dl, "LargeCar"));
 		assertFalse(rentCo.issueCar(p_25yo, dl, "LargeCar"));
 		assertFalse(rentCo.issueCar(p_25yo, dl, "SmallCar")); // Still not true if you try to rent a different type of car
-		dl = new DrivingLicence(name_25yo_copy, issued_5yo, true);
+		dl = dlFixture(p_25yo_copy, 5, true);
 		assertFalse(rentCo.issueCar(p_25yo_copy, dl, "LargeCar")); // Still not true with a different Person object that is logically equal
 		
 		// Can't rent if no cars available of the requested type
-		dl = new DrivingLicence(name_20yo, issued_1yo, true);
-		assertTrue(rentCo.issueCar(p_20yo, dl, "SmallCar"));
-		dl = new DrivingLicence(name_20yo_twin, issued_1yo, true);
-		assertFalse(rentCo.issueCar(p_20yo_twin, dl, "SmallCar"));	
+		assertTrue(rentCo.issueCar(p_20yo, dlFixture(p_20yo, 1, true), "SmallCar"));
+		assertFalse(rentCo.issueCar(p_20yo_twin, dlFixture(p_20yo_twin, 1, true), "SmallCar"));
 	}
 	
 	/**
@@ -415,30 +355,22 @@ class RentalCompanyTest {
 			LargeCar lc = new LargeCar(String.format("LC%1$02d JJJ", i));
 			rentCo.addCar(lc);
 		}
-		
-		Calendar cDOB = Calendar.getInstance();
-		cDOB.set(1971,Calendar.DECEMBER,18);
-		Date dDOB = cDOB.getTime();
-		Name name = new Name("Stephen", "Shephard");
-		Person p = new Person(name, dDOB);
-		Name name2 = new Name("John", "Smith");
-		Person p2 = new Person(name2, dDOB);
-		Calendar cIssued = Calendar.getInstance();
-		cIssued.set(1990,Calendar.OCTOBER,20);
-		Date issued = cIssued.getTime();
-		DrivingLicence dl = new DrivingLicence(name, issued, true);
+
+		Person p1 = personFixture("Stephen", "Shephard", 50);
+		DrivingLicence dl1 = dlFixture(p1, 30, true);
+		Person p2 = personFixture("John", "Smith", 29);
 		
 		// Check that there were 20 small cars available to rent
 		assertEquals(20, rentCo.availableCars("SmallCar"));
 		
 		// Issue car
-		rentCo.issueCar(p, dl, "SmallCar");
+		rentCo.issueCar(p1, dl1, "SmallCar");
 				
 		// Check that there are now only 19 available small cars to rent
 		assertEquals(19, rentCo.availableCars("SmallCar"));
 		
 		// Get car
-		Car car = rentCo.getCar(p);
+		Car car = rentCo.getCar(p1);
 		assertNotNull(car);
 		
 		// Drive the car
@@ -451,7 +383,7 @@ class RentalCompanyTest {
 		assertEquals(19, rentCo.availableCars("SmallCar"));
 			
 		// Terminate valid rental - 1 litre of fuel should be required
-		assertEquals(1, rentCo.terminateRental(p));
+		assertEquals(1, rentCo.terminateRental(p1));
 		
 		// Check that there are now 20 available small cars to rent
 		assertEquals(20, rentCo.availableCars("SmallCar"));
